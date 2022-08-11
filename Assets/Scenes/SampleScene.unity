@@ -450,6 +450,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f20a11472847d394fb86c02b7d420d0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _scaleForce: 0.25
 --- !u!1 &1164167638
 GameObject:
   m_ObjectHideFlags: 0
@@ -810,7 +811,7 @@ GameObject:
   - component: {fileID: 1930602875}
   - component: {fileID: 1930602877}
   m_Layer: 0
-  m_Name: CameraSizeUpdater
+  m_Name: CameraSizeInShaderUpdater
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
