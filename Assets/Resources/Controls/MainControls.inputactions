@@ -1,0 +1,76 @@
+{
+    "name": "MainControls",
+    "maps": [
+        {
+            "name": "Camera",
+            "id": "4ad0a96c-5223-472d-b449-bbf7a51b5556",
+            "actions": [
+                {
+                    "name": "Moving",
+                    "type": "PassThrough",
+                    "id": "d04c2cbf-a469-4af3-9700-026abc46e978",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "Zoom",
+                    "type": "PassThrough",
+                    "id": "1b3e97f5-f815-4e0d-9eed-81b98e13babd",
+                    "expectedControlType": "",
+                    "processors": "Clamp(min=-1,max=1),Invert",
+                    "interactions": "",
+                    "initialStateCheck": true
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "f5b09262-cc30-4b29-9dd1-c94e097dba2a",
+                    "path": "<Mouse>/scroll/y",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Zoom",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "MouseScreenGrabing",
+                    "id": "edbaa9bc-cfe7-4327-b44f-7fcf24980f1f",
+                    "path": "OneModifier(overrideModifiersNeedToBePressedFirst=true)",
+                    "interactions": "",
+                    "processors": "InvertVector2",
+                    "groups": "",
+                    "action": "Moving",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "modifier",
+                    "id": "48042187-9362-4e3e-b4f6-5e68d44b185d",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Moving",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "binding",
+                    "id": "c2cc17e0-d921-4efc-ba99-97a082a3d0e8",
+                    "path": "<Mouse>/delta",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Moving",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}

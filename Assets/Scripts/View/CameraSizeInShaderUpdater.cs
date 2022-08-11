@@ -18,9 +18,12 @@ namespace LevelBuilder2d.View
             _sizeVariableProvider = _sizeShaderVariableProviderComponent.Interface;
             _cameraSizeChanger = cameraSizeChanger;
 
-            //_sizeVariableProvider.ShaderVariable = cameraSizeChanger.OrthographicSize;
-
             _cameraSizeChanger.OrthographicSizeChanged += OnCameraOrtographicSizeChanged;
+        }
+
+        protected void OnEnable()
+        {
+            _sizeVariableProvider.ShaderVariable = _cameraSizeChanger.OrthographicSize;
         }
 
         private void OnCameraOrtographicSizeChanged(ICameraSizeChanger cameraSizeChanger)
