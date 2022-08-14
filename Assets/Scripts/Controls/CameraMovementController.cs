@@ -5,7 +5,7 @@ using Zenject;
 
 namespace LevelBuilder2d.Controls
 {
-    public class CameraMovementController : MonoBehaviour
+    public class CameraMovementController : MonoBehaviour, ICameraMovementController
     {
         [SerializeField] private Camera _camera;    
         [SerializeField] private float _movementForce = 1.25f;
@@ -14,11 +14,20 @@ namespace LevelBuilder2d.Controls
         private MainControls _mainControls;
         private ICameraSizeChanger _cameraSizeChanger;
 
+        public float MovementForce { get => _movementForce; set => _movementForce = value; }
+        public float ScaleForce { get => _scaleForce; set => _scaleForce = value; }
+
         [Inject]
         public void Construct(ICameraSizeChanger cameraSizeChanger)
         {
             _cameraSizeChanger = cameraSizeChanger;
         }
+
+        public void Stop()
+            => enabled = false;
+
+        public void Resume()
+            => enabled = true;
 
         protected void Awake()
         {
@@ -26,6 +35,12 @@ namespace LevelBuilder2d.Controls
             _mainControls.Camera.Moving.performed += OnCameraMoving;
             _mainControls.Camera.Zoom.performed += OnCameraZoom;
         }
+
+        protected virtual void OnEnable()
+            => _mainControls.Enable();  
+
+        protected virtual void OnDisable()
+            => _mainControls.Disable();
 
         private void OnCameraZoom(InputAction.CallbackContext obj)
         {
@@ -39,16 +54,6 @@ namespace LevelBuilder2d.Controls
                 obj.ReadValue<Vector2>()
                 * _movementForce 
                 * _cameraSizeChanger.OrthographicSize);
-        }
-
-        protected void OnEnable()
-        {
-            _mainControls.Enable();
-        }
-
-        protected void OnDisable()
-        {
-            _mainControls.Disable();
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using UnityEditor.Search;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 namespace LevelBuilder2d.View
