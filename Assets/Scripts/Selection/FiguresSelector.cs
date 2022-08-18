@@ -4,6 +4,7 @@ using LevelBuilder2d.Building;
 using LevelBuilder2d.Controls;
 using LevelBuilder2d.Utilities;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using Zenject;
 
@@ -22,6 +23,10 @@ namespace LevelBuilder2d.Selection
 		private Vector2 _startSelectionPoint;
 		private bool _isSelectionStart = false;
 
+		public Rect SelectionRect { get; private set; }
+
+		public event UnityAction<IFiguresSelector> SelectionChanged;
+
 		[Inject]
 		public void Construct(
 			ICameraRayThrower cameraRayThrower,
@@ -38,7 +43,7 @@ namespace LevelBuilder2d.Selection
 			_mainControls = new MainControls();
 			_mainControls.FigureSelector.StartSelection.performed += OnSelectionStart;
 			_mainControls.FigureSelector.StopSelection.performed += OnSelectionStop;
-			_mainControls.FigureSelector.SlectionPointerMove.performed += OnSelectionPointerMove;
+			_mainControls.FigureSelector.SelectionPointerMove.performed += OnSelectionPointerMove;
             _selectionArea.Disable();
 
 			_overUITester = new OverUITester(LayerMask.NameToLayer("UI"));
@@ -64,8 +69,15 @@ namespace LevelBuilder2d.Selection
 		public void Resume()
 			=> enabled = true;
 
-		private Vector2 GetSelectionPointerPosition()
-			=> _mainControls.FigureSelector.SlectionPointerMove.ReadValue<Vector2>();
+        public ReadOnlyCollection<IFigure> GetSelectedFigures()
+        {
+            IFigure[] copy = new IFigure[_selectedFigures.Count];
+            _selectedFigures.CopyTo(copy, 0);
+            return new ReadOnlyCollection<IFigure>(copy);
+        }
+
+        private Vector2 GetSelectionPointerPosition()
+			=> _mainControls.FigureSelector.SelectionPointerMove.ReadValue<Vector2>();
 
         private void OnSelectedFigureDestroyed(IDestroyable selectedFigure)
 			=> UnsubscribeFromSelectedFigure(selectedFigure);
@@ -82,6 +94,8 @@ namespace LevelBuilder2d.Selection
             figure.Unselected += OnSelectedFigureUnselected;
             _selectedFigures.Add(figure);
             figure.Select();
+			UpdateSelectionRect();
+            SelectionChanged?.Invoke(this);
         }
 
         private void UnsubscribeFromSelectedFigure(object selectedFigure) 
@@ -90,6 +104,8 @@ namespace LevelBuilder2d.Selection
 			figure.Destroyed -= OnSelectedFigureDestroyed;
 			figure.Unselected -= OnSelectedFigureUnselected;
 			_selectedFigures.Remove(figure);
+			UpdateSelectionRect();
+            SelectionChanged?.Invoke(this);
         }
 
         private void OnSelectionStart(InputAction.CallbackContext obj)
@@ -157,11 +173,36 @@ namespace LevelBuilder2d.Selection
 			}
         }
 
-		ReadOnlyCollection<IFigure> IFiguresSelector.GetSelectedFigures()
-		{
-            IFigure[] copy = new IFigure[_selectedFigures.Count];
-            _selectedFigures.CopyTo(copy, 0);
-            return new ReadOnlyCollection<IFigure>(copy);
+		private void UpdateSelectionRect() 
+		{    
+            if (_selectedFigures.Count == 0)
+                SelectionRect = new Rect();
+            else
+                SelectionRect = GetSelectionRect(_selectedFigures, _selectedFigures[0].Position);
+        }
+
+        private Rect GetSelectionRect(
+            List<IFigure> selectedFigures,
+            Vector2 firstFigurePosition)
+        {
+            Vector3 min = firstFigurePosition;
+            Vector3 max = firstFigurePosition;
+
+            for (int i = 1; i < selectedFigures.Count; i++)
+            {
+                if (selectedFigures[i] == null)
+                    continue;
+
+                Vector2 pos = selectedFigures[i].Position;
+                min.x = Mathf.Min(pos.x, min.x);
+                max.x = Mathf.Max(pos.x, max.x);
+                min.y = Mathf.Min(pos.y, min.y);
+                max.y = Mathf.Max(pos.y, max.y);
+            }
+            Rect selectionRect = new Rect();
+            selectionRect.min = min;
+            selectionRect.max = max;
+            return selectionRect;
         }
 	} 
 }

@@ -35,7 +35,8 @@ namespace LevelBuilder2d.Controls
         private void OnFigureSpawn(InputAction.CallbackContext obj)
         {
             Vector2 spawnPosition
-                = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
+                = Camera.main.ScreenToWorldPoint(
+                    _mainControls.FigureSpawner.SpawnPointerPosition.ReadValue<Vector2>());
             _figureSpawner.SpawnAt(spawnPosition);
         }
     }

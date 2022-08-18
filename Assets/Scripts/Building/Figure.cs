@@ -5,6 +5,7 @@ using LevelBuilder2d.View;
 using UnityEngine;
 using UnityEngine.Events;
 using Zenject;
+using static UnityEngine.RuleTile.TilingRuleOutput;
 
 namespace LevelBuilder2d.Building
 {
@@ -19,32 +20,48 @@ namespace LevelBuilder2d.Building
         private IColorProvider _bodyColorProvider;
         private Color _startBodyColor;
         private bool _isSelected = false;
+        private float _previousAngle;
 
         public event UnityAction<ISelectable> Selected;
         public event UnityAction<ISelectable> Unselected;
+        public event UnityAction<IPositionHandler> OnPositionChanged;
 
         public bool IsSelected { get => _isSelected; }
+
         public Sprite Sprite 
         {
             get => _spriteProvider.Sprite; 
             set => _spriteProvider.Sprite = value;
         }
-        public Vector2 Position 
-        { 
-            get => transform.position; 
-            set => transform.position = value; 
+
+        public Vector3 Position
+        {
+            get => transform.position;
+
+            set
+            {
+                if (transform.position == value)
+                    return;
+
+                transform.position = value;
+                OnPositionChanged?.Invoke(this);
+            }
         }
+
         public Vector2 Scale 
         { 
             get => transform.localScale; 
             set => transform.localScale = value; 
         }
+
         public Quaternion Rotation 
         {
             get => transform.rotation; 
             set => transform.rotation = value;
         }
+
         public Vector3 Center { get => _collider2D.bounds.center; }
+        
 
         [Inject]
         public void Construct()
@@ -54,8 +71,11 @@ namespace LevelBuilder2d.Building
             _startBodyColor = _bodyColorProvider.Color;
         }
 
-        public void AddRotation(Vector2 rotatonPoint, float angle)
-            => transform.RotateAround(rotatonPoint, new Vector3(0, 0, 1), angle);
+        public void SetRotationAroundPoint(Vector2 rotatonPoint, float angle)
+        {
+            transform.RotateAround(rotatonPoint, new Vector3(0, 0, 1), _previousAngle - angle);
+            _previousAngle = angle;
+        }
          
         public void Select()
         {

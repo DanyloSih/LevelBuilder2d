@@ -138,6 +138,15 @@ public partial class @MainControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""SpawnPointerPosition"",
+                    ""type"": ""Value"",
+                    ""id"": ""983e675b-1e70-4ef8-b82f-370b6a155f1b"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -160,6 +169,28 @@ public partial class @MainControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Spawn"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ecbb5ab2-ec69-4f40-99de-042161e96895"",
+                    ""path"": ""<Mouse>/position"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SpawnPointerPosition"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""07895145-ad97-4c42-9638-4dd1cd3f2723"",
+                    ""path"": ""<Touchscreen>/primaryTouch/position"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SpawnPointerPosition"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -188,7 +219,7 @@ public partial class @MainControls : IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""SlectionPointerMove"",
+                    ""name"": ""SelectionPointerMove"",
                     ""type"": ""Value"",
                     ""id"": ""22d1d40a-a8ca-441f-8739-66d262086019"",
                     ""expectedControlType"": ""Vector2"",
@@ -249,7 +280,7 @@ public partial class @MainControls : IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""SlectionPointerMove"",
+                    ""action"": ""SelectionPointerMove"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -260,7 +291,7 @@ public partial class @MainControls : IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""SlectionPointerMove"",
+                    ""action"": ""SelectionPointerMove"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -276,11 +307,12 @@ public partial class @MainControls : IInputActionCollection2, IDisposable
         // FigureSpawner
         m_FigureSpawner = asset.FindActionMap("FigureSpawner", throwIfNotFound: true);
         m_FigureSpawner_Spawn = m_FigureSpawner.FindAction("Spawn", throwIfNotFound: true);
+        m_FigureSpawner_SpawnPointerPosition = m_FigureSpawner.FindAction("SpawnPointerPosition", throwIfNotFound: true);
         // FigureSelector
         m_FigureSelector = asset.FindActionMap("FigureSelector", throwIfNotFound: true);
         m_FigureSelector_StartSelection = m_FigureSelector.FindAction("StartSelection", throwIfNotFound: true);
         m_FigureSelector_StopSelection = m_FigureSelector.FindAction("StopSelection", throwIfNotFound: true);
-        m_FigureSelector_SlectionPointerMove = m_FigureSelector.FindAction("SlectionPointerMove", throwIfNotFound: true);
+        m_FigureSelector_SelectionPointerMove = m_FigureSelector.FindAction("SelectionPointerMove", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -382,11 +414,13 @@ public partial class @MainControls : IInputActionCollection2, IDisposable
     private readonly InputActionMap m_FigureSpawner;
     private IFigureSpawnerActions m_FigureSpawnerActionsCallbackInterface;
     private readonly InputAction m_FigureSpawner_Spawn;
+    private readonly InputAction m_FigureSpawner_SpawnPointerPosition;
     public struct FigureSpawnerActions
     {
         private @MainControls m_Wrapper;
         public FigureSpawnerActions(@MainControls wrapper) { m_Wrapper = wrapper; }
         public InputAction @Spawn => m_Wrapper.m_FigureSpawner_Spawn;
+        public InputAction @SpawnPointerPosition => m_Wrapper.m_FigureSpawner_SpawnPointerPosition;
         public InputActionMap Get() { return m_Wrapper.m_FigureSpawner; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -399,6 +433,9 @@ public partial class @MainControls : IInputActionCollection2, IDisposable
                 @Spawn.started -= m_Wrapper.m_FigureSpawnerActionsCallbackInterface.OnSpawn;
                 @Spawn.performed -= m_Wrapper.m_FigureSpawnerActionsCallbackInterface.OnSpawn;
                 @Spawn.canceled -= m_Wrapper.m_FigureSpawnerActionsCallbackInterface.OnSpawn;
+                @SpawnPointerPosition.started -= m_Wrapper.m_FigureSpawnerActionsCallbackInterface.OnSpawnPointerPosition;
+                @SpawnPointerPosition.performed -= m_Wrapper.m_FigureSpawnerActionsCallbackInterface.OnSpawnPointerPosition;
+                @SpawnPointerPosition.canceled -= m_Wrapper.m_FigureSpawnerActionsCallbackInterface.OnSpawnPointerPosition;
             }
             m_Wrapper.m_FigureSpawnerActionsCallbackInterface = instance;
             if (instance != null)
@@ -406,6 +443,9 @@ public partial class @MainControls : IInputActionCollection2, IDisposable
                 @Spawn.started += instance.OnSpawn;
                 @Spawn.performed += instance.OnSpawn;
                 @Spawn.canceled += instance.OnSpawn;
+                @SpawnPointerPosition.started += instance.OnSpawnPointerPosition;
+                @SpawnPointerPosition.performed += instance.OnSpawnPointerPosition;
+                @SpawnPointerPosition.canceled += instance.OnSpawnPointerPosition;
             }
         }
     }
@@ -416,14 +456,14 @@ public partial class @MainControls : IInputActionCollection2, IDisposable
     private IFigureSelectorActions m_FigureSelectorActionsCallbackInterface;
     private readonly InputAction m_FigureSelector_StartSelection;
     private readonly InputAction m_FigureSelector_StopSelection;
-    private readonly InputAction m_FigureSelector_SlectionPointerMove;
+    private readonly InputAction m_FigureSelector_SelectionPointerMove;
     public struct FigureSelectorActions
     {
         private @MainControls m_Wrapper;
         public FigureSelectorActions(@MainControls wrapper) { m_Wrapper = wrapper; }
         public InputAction @StartSelection => m_Wrapper.m_FigureSelector_StartSelection;
         public InputAction @StopSelection => m_Wrapper.m_FigureSelector_StopSelection;
-        public InputAction @SlectionPointerMove => m_Wrapper.m_FigureSelector_SlectionPointerMove;
+        public InputAction @SelectionPointerMove => m_Wrapper.m_FigureSelector_SelectionPointerMove;
         public InputActionMap Get() { return m_Wrapper.m_FigureSelector; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -439,9 +479,9 @@ public partial class @MainControls : IInputActionCollection2, IDisposable
                 @StopSelection.started -= m_Wrapper.m_FigureSelectorActionsCallbackInterface.OnStopSelection;
                 @StopSelection.performed -= m_Wrapper.m_FigureSelectorActionsCallbackInterface.OnStopSelection;
                 @StopSelection.canceled -= m_Wrapper.m_FigureSelectorActionsCallbackInterface.OnStopSelection;
-                @SlectionPointerMove.started -= m_Wrapper.m_FigureSelectorActionsCallbackInterface.OnSlectionPointerMove;
-                @SlectionPointerMove.performed -= m_Wrapper.m_FigureSelectorActionsCallbackInterface.OnSlectionPointerMove;
-                @SlectionPointerMove.canceled -= m_Wrapper.m_FigureSelectorActionsCallbackInterface.OnSlectionPointerMove;
+                @SelectionPointerMove.started -= m_Wrapper.m_FigureSelectorActionsCallbackInterface.OnSelectionPointerMove;
+                @SelectionPointerMove.performed -= m_Wrapper.m_FigureSelectorActionsCallbackInterface.OnSelectionPointerMove;
+                @SelectionPointerMove.canceled -= m_Wrapper.m_FigureSelectorActionsCallbackInterface.OnSelectionPointerMove;
             }
             m_Wrapper.m_FigureSelectorActionsCallbackInterface = instance;
             if (instance != null)
@@ -452,9 +492,9 @@ public partial class @MainControls : IInputActionCollection2, IDisposable
                 @StopSelection.started += instance.OnStopSelection;
                 @StopSelection.performed += instance.OnStopSelection;
                 @StopSelection.canceled += instance.OnStopSelection;
-                @SlectionPointerMove.started += instance.OnSlectionPointerMove;
-                @SlectionPointerMove.performed += instance.OnSlectionPointerMove;
-                @SlectionPointerMove.canceled += instance.OnSlectionPointerMove;
+                @SelectionPointerMove.started += instance.OnSelectionPointerMove;
+                @SelectionPointerMove.performed += instance.OnSelectionPointerMove;
+                @SelectionPointerMove.canceled += instance.OnSelectionPointerMove;
             }
         }
     }
@@ -467,11 +507,12 @@ public partial class @MainControls : IInputActionCollection2, IDisposable
     public interface IFigureSpawnerActions
     {
         void OnSpawn(InputAction.CallbackContext context);
+        void OnSpawnPointerPosition(InputAction.CallbackContext context);
     }
     public interface IFigureSelectorActions
     {
         void OnStartSelection(InputAction.CallbackContext context);
         void OnStopSelection(InputAction.CallbackContext context);
-        void OnSlectionPointerMove(InputAction.CallbackContext context);
+        void OnSelectionPointerMove(InputAction.CallbackContext context);
     }
 }

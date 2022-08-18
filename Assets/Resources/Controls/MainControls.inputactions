@@ -116,6 +116,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "SpawnPointerPosition",
+                    "type": "Value",
+                    "id": "983e675b-1e70-4ef8-b82f-370b6a155f1b",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
                 }
             ],
             "bindings": [
@@ -138,6 +147,28 @@
                     "processors": "",
                     "groups": "",
                     "action": "Spawn",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ecbb5ab2-ec69-4f40-99de-042161e96895",
+                    "path": "<Mouse>/position",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SpawnPointerPosition",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "07895145-ad97-4c42-9638-4dd1cd3f2723",
+                    "path": "<Touchscreen>/primaryTouch/position",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SpawnPointerPosition",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
@@ -166,7 +197,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "SlectionPointerMove",
+                    "name": "SelectionPointerMove",
                     "type": "Value",
                     "id": "22d1d40a-a8ca-441f-8739-66d262086019",
                     "expectedControlType": "Vector2",
@@ -227,7 +258,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "SlectionPointerMove",
+                    "action": "SelectionPointerMove",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -238,7 +269,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "SlectionPointerMove",
+                    "action": "SelectionPointerMove",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

@@ -22,7 +22,8 @@ namespace LevelBuilder2d.Building.Rules
                 if (item == figure)
                     continue;
 
-                if (placePosition == item.Position)
+                Vector3 v3PlacePosition = placePosition;
+                if (v3PlacePosition == item.Position)
                     return false;
             }
 

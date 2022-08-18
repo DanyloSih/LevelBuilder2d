@@ -19,7 +19,7 @@ namespace LevelBuilder2d.Selection
         protected override void OnButtonClicked()
         {
             foreach (var item in _figuresSelector.GetSelectedFigures())
-                item.Position += _translationVector;
+                item.Position += new Vector3(_translationVector.x, _translationVector.y);
         }
     }
 }
