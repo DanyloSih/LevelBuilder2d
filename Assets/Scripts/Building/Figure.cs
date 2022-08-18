@@ -5,7 +5,6 @@ using LevelBuilder2d.View;
 using UnityEngine;
 using UnityEngine.Events;
 using Zenject;
-using static UnityEngine.RuleTile.TilingRuleOutput;
 
 namespace LevelBuilder2d.Building
 {
@@ -73,7 +72,7 @@ namespace LevelBuilder2d.Building
 
         public void SetRotationAroundPoint(Vector2 rotatonPoint, float angle)
         {
-            transform.RotateAround(rotatonPoint, new Vector3(0, 0, 1), _previousAngle - angle);
+            transform.RotateAround(rotatonPoint, new Vector3(0, 0, 1), -(_previousAngle - angle));
             _previousAngle = angle;
         }
          

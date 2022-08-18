@@ -1,5 +1,4 @@
-﻿using System;
-using InspectorAddons;
+﻿using InspectorAddons;
 using LevelBuilder2d.Utilities;
 using UnityEngine;
 using UnityEngine.Events;
